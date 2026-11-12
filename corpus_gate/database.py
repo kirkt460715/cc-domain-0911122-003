@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS releases(release_id TEXT PRIMARY KEY,revision INTEGER
 CREATE TABLE IF NOT EXISTS release_members(release_id TEXT NOT NULL REFERENCES releases(release_id),document_id TEXT NOT NULL,cluster_id TEXT NOT NULL,split TEXT NOT NULL,ordinal INTEGER NOT NULL,payload TEXT NOT NULL,digest TEXT NOT NULL,PRIMARY KEY(release_id,document_id));
 CREATE TABLE IF NOT EXISTS release_events(event_id INTEGER PRIMARY KEY AUTOINCREMENT,release_id TEXT NOT NULL,action TEXT NOT NULL,body TEXT NOT NULL,at TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS audit(position INTEGER PRIMARY KEY AUTOINCREMENT,action TEXT NOT NULL,payload TEXT NOT NULL,previous_hash TEXT NOT NULL,entry_hash TEXT NOT NULL,at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS docx_previews(preview_id TEXT PRIMARY KEY,source_id TEXT NOT NULL,external_id TEXT NOT NULL,version INTEGER NOT NULL,view TEXT NOT NULL,state TEXT NOT NULL,package_sha256 TEXT NOT NULL,rule_version INTEGER NOT NULL,result_digest TEXT NOT NULL,record_digest TEXT,document_id TEXT,result TEXT NOT NULL,evidence TEXT NOT NULL,authorization TEXT NOT NULL,file_name TEXT NOT NULL,created_at TEXT NOT NULL,confirmed_at TEXT);
 '''
 
 

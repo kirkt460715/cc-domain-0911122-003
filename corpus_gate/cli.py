@@ -8,6 +8,7 @@ from corpus_gate.ingest import sources, formats, bundles
 from corpus_gate.text import profiles
 from corpus_gate.dedup import clusters
 from corpus_gate.releases import manifests, exporting, transfer
+from corpus_gate.docx import gate as docx_gate
 
 
 def read(path, maximum=33554432):
@@ -88,6 +89,27 @@ def parser():
     sub.add_parser('operations')
     demo = sub.add_parser('demo')
     demo.add_argument('--fixture', required=True)
+    docx_rules = sub.add_parser('docx-rules')
+    docx_preview = sub.add_parser('docx-preview')
+    docx_preview.add_argument('--source', required=True)
+    docx_preview.add_argument('--external-id', required=True)
+    docx_preview.add_argument('--version', required=True, type=int)
+    docx_preview.add_argument('--view', required=True, choices=['accepted', 'original'])
+    docx_preview.add_argument('--file', required=True)
+    docx_preview.add_argument('--context', required=True)
+    docx_get = sub.add_parser('docx-get')
+    docx_get.add_argument('preview_id')
+    docx_list = sub.add_parser('docx-list')
+    docx_list.add_argument('--source')
+    docx_list.add_argument('--external-id')
+    docx_confirm = sub.add_parser('docx-confirm')
+    docx_confirm.add_argument('preview_id')
+    docx_confirm.add_argument('--profile', required=True)
+    docx_confirm.add_argument('--batch', required=True)
+    docx_confirm.add_argument('--context', required=True)
+    docx_compare = sub.add_parser('docx-compare')
+    docx_compare.add_argument('left_preview_id')
+    docx_compare.add_argument('right_preview_id')
     return root
 
 
@@ -164,6 +186,18 @@ def execute(app, args):
         return [{'operation': key, 'required': required.split(), 'optional': optional.split()} for key, (_, required, optional) in sorted(app.operations().items())]
     if args.command == 'demo':
         return demonstrate(app, json_file(args.fixture))
+    if args.command == 'docx-rules':
+        return docx_gate.rules()
+    if args.command == 'docx-preview':
+        return docx_gate.preview_file(app.db, args.source, args.external_id, args.version, args.view, args.file, json_file(args.context))
+    if args.command == 'docx-get':
+        return docx_gate.get_preview(app.db, args.preview_id)
+    if args.command == 'docx-list':
+        return docx_gate.list_previews(app.db, args.source, args.external_id)
+    if args.command == 'docx-confirm':
+        return docx_gate.confirm(app.db, args.preview_id, args.profile, args.batch, json_file(args.context))
+    if args.command == 'docx-compare':
+        return docx_gate.compare(app.db, args.left_preview_id, args.right_preview_id)
     fail('command', 'Unsupported command')
 
 

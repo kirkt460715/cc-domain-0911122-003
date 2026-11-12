@@ -52,6 +52,7 @@ class CorpusGate:
         from corpus_gate.ingest import bundles, validation as intake_validation
         from corpus_gate.releases import validation, statistics
         from corpus_gate.review import sampling
+        from corpus_gate.docx import gate as docx_gate
         return {
             'intake.preflight': (bind(intake_validation.preflight), 'source_id profile_id records context', ''),
             'intake.manifest': (bind(intake_validation.manifest), 'source_id', ''),
@@ -164,13 +165,18 @@ class CorpusGate:
             'notice.pending': (self.notices.pending, 'subscriber_id', ''),
             'notice.acknowledge': (self.notices.acknowledge, 'subscriber_id notice_id expected_digest receipt', ''),
             'notice.impact': (self.notices.impact, 'release_id', ''),
-            'system.provenance': (bind(inspection.provenance), 'document_id', ''),
-            'system.history': (bind(inspection.source_histories), '', ''),
+            'system.provenance': (bind(inspection.provenance), 'document_id', ''),            'system.history': (bind(inspection.source_histories), '', ''),
             'system.check': (bind(inspection.check), '', ''),
             'system.overview': (bind(inspection.overview), '', ''),
             'system.quality': (bind(inspection.quality_report), '', 'source_id'),
             'system.source_impact': (bind(inspection.source_impact), 'source_id', ''),
             'audit.page': (bind(inspection.audit_page), '', 'after limit'),
+            'docx.rules': (bind(docx_gate.rules), '', ''),
+            'docx.preview': (bind(docx_gate.preview_file), 'source_id external_id version view path context', ''),
+            'docx.get': (bind(docx_gate.get_preview), 'preview_id', ''),
+            'docx.list': (bind(docx_gate.list_previews), '', 'source_id external_id'),
+            'docx.confirm': (bind(docx_gate.confirm), 'preview_id profile_id batch_id context', ''),
+            'docx.compare': (bind(docx_gate.compare), 'left_preview_id right_preview_id', ''),
         }
 
     def transaction(self, requests):

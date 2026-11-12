@@ -19,6 +19,10 @@ python3 -m compileall -q corpus_gate
 python3 -m corpus_gate --help
 python3 -m corpus_gate --db corpus.sqlite3 operations
 python3 -m corpus_gate --db corpus.sqlite3 check
+python3 -m corpus_gate --db corpus.sqlite3 docx-rules
+python3 -m corpus_gate --db corpus.sqlite3 docx-preview --source src --external-id manual --version 1 --view accepted --file manual.docx --context context.json
+python3 -m corpus_gate --db corpus.sqlite3 docx-confirm <preview_id> --profile default --batch docx-batch --context context.json
+python3 -m corpus_gate --db corpus.sqlite3 docx-compare <left_preview_id> <right_preview_id>
 
 ## 本地来源
 
